@@ -40,4 +40,4 @@ The app uses a template to render each task card dynamically and ensures accessi
 
 This project is deployed on GitHub Pages:
 
-- [🔗 View the Live App](https://github.com/JenniferFeldt/todo-app.git)
+- [🔗 View the Live App](https://github.com/jenniferfeldt/simple-todo-app)

@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const addTodoButton = document.querySelector(".button_action_add");
   const addTodoForm = document.querySelector("#add-todo-popup .popup__form");
 
+  const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
+  newTodoValidator.enableValidation();
+
   const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
   const handleCheck = (completed) => {
@@ -51,11 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const todoElement = generateTodo(values);
       section.addItem(todoElement);
-      todoCounter.updateTotal(true); // ✅ NEW
+      todoCounter.updateTotal(true);
 
-      newTodoValidator.resetValidation();
       addTodoPopup.close();
     },
+    validator: newTodoValidator,
   });
 
   addTodoPopup.setEventListeners();
@@ -63,7 +66,4 @@ document.addEventListener("DOMContentLoaded", () => {
   addTodoButton.addEventListener("click", () => {
     addTodoPopup.open();
   });
-
-  const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
-  newTodoValidator.enableValidation();
 });
