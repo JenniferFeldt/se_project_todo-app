@@ -3,21 +3,28 @@ import { initialTodos, validationConfig } from "../utils/constants.js";
 import Todo from "../components/Todo.js";
 import FormValidator from "../components/FormValidator.js";
 import Section from "../components/Section.js";
-import Popup from "../components/Popup.js";
 import PopupWithForm from "../components/PopupWithForm.js";
+import TodoCounter from "../components/TodoCounter.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Button and form references
   const addTodoButton = document.querySelector(".button_action_add");
   const addTodoForm = document.querySelector("#add-todo-popup .popup__form");
 
-  // Generate a single Todo element
+  const todoCounter = new TodoCounter(initialTodos, ".counter__text");
+
+  const handleCheck = (completed) => {
+    todoCounter.updateCompleted(completed);
+  };
+
+  const handleDelete = () => {
+    todoCounter.updateTotal(false);
+  };
+
   const generateTodo = (data) => {
-    const todo = new Todo(data, "#todo-template");
+    const todo = new Todo(data, "#todo-template", handleCheck, handleDelete);
     return todo.getView();
   };
 
-  // Section instance for rendering todos
   const section = new Section({
     items: initialTodos,
     renderer: (item) => {
@@ -27,25 +34,36 @@ document.addEventListener("DOMContentLoaded", () => {
     containerSelector: "todos__list",
   });
 
-  // Render initial todos
   section.renderItems();
 
-  // Popup instance
   const addTodoPopup = new PopupWithForm({
     popupSelector: "#add-todo-popup",
-    handleFormSubmit: () => {
-      // You can fill this in later
+    handleFormSubmit: (formData) => {
+      const { name, date } = formData;
+
+      const parsedDate = new Date(date);
+      parsedDate.setMinutes(
+        parsedDate.getMinutes() + parsedDate.getTimezoneOffset()
+      );
+
+      const id = uuidv4();
+      const values = { id, name, date: parsedDate, completed: false };
+
+      const todoElement = generateTodo(values);
+      section.addItem(todoElement);
+      todoCounter.updateTotal(true); // ✅ NEW
+
+      newTodoValidator.resetValidation();
+      addTodoPopup.close();
     },
   });
 
-  addTodoPopup.setEventListeners(); // 🔑 Required
+  addTodoPopup.setEventListeners();
 
-  // Open popup on button click
   addTodoButton.addEventListener("click", () => {
     addTodoPopup.open();
   });
 
-  // Enable form validation
   const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
   newTodoValidator.enableValidation();
 });
