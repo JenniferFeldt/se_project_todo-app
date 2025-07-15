@@ -14,10 +14,10 @@ class Todo {
 
     this._todoDeleteBtn.addEventListener("click", () => {
       if (this._data.completed) {
-        this._handleCheck(false); // update completed count
+        this._handleCheck(false);
       }
       this._todoElement.remove();
-      this._handleDelete(); // update total count
+      this._handleDelete();
     });
   }
 
